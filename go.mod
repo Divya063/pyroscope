@@ -1,7 +1,5 @@
 module github.com/pyroscope-io/pyroscope
 
-go 1.14
-
 require (
 	github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59
 	github.com/cheggaaa/pb/v3 v3.0.5
@@ -43,5 +41,6 @@ require (
 	golang.org/x/tools v0.1.0
 	google.golang.org/protobuf v1.25.0 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.6
-	k8s.io/klog v1.0.0 // indirect
 )
+
+go 1.13

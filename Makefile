@@ -16,7 +16,7 @@ EMBEDDED_ASSETS_DEPS ?= "assets-release"
 EXTRA_LDFLAGS ?= ""
 
 ifndef $(GOPATH)
-	GOPATH=$(shell go env GOPATH || true)
+	GOPATH=$(shell go1.16 env GOPATH || true)
 	export GOPATH
 endif
 
@@ -66,7 +66,6 @@ assets-release: install-web-dependencies
 
 .PHONY: embedded-assets
 embedded-assets: install-dev-tools $(shell echo $(EMBEDDED_ASSETS_DEPS))
-	$(GOPATH)/bin/pkger -o pkg/server
 
 .PHONY: lint
 lint:

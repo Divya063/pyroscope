@@ -1,9 +1,12 @@
 package server
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
+	"log"
 	golog "log"
 	"net/http"
 	"os"
@@ -14,7 +17,6 @@ import (
 
 	_ "net/http/pprof"
 
-	"github.com/markbates/pkger"
 	"github.com/pyroscope-io/pyroscope/pkg/build"
 	"github.com/pyroscope-io/pyroscope/pkg/config"
 	"github.com/pyroscope-io/pyroscope/pkg/storage"
@@ -47,6 +49,9 @@ func New(cfg *config.Config, s *storage.Storage) *Controller {
 	}
 }
 
+//go:embed webapp
+var content embed.FS
+
 func (ctrl *Controller) Start() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ingest", ctrl.ingestHandler)
@@ -55,8 +60,11 @@ func (ctrl *Controller) Start() {
 	mux.HandleFunc("/label-values", ctrl.labelValuesHandler)
 	var dir http.FileSystem
 	if build.UseEmbeddedAssets {
-		// for this to work you need to run `pkger` first. See Makefile for more information
-		dir = pkger.Dir("/webapp/public")
+		serverRoot, err := fs.Sub(content, "webapp")
+		if err != nil {
+			log.Fatal(err)
+		}
+		dir = http.FS(serverRoot)
 	} else {
 		dir = http.Dir("./webapp/public")
 	}
